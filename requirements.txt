@@ -1,0 +1,5 @@
+flask
+pymongo
+together
+chromadb
+sentence-transformers
