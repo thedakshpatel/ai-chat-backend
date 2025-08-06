@@ -1,105 +1,176 @@
-
 AI Chat Backend with Flask, MongoDB, Together AI, and ChromaDB
----------------------------------------------------------------
+___________________________________________________________________
 
-This is a simple backend project that lets you:
-- Sign up and log in as a user
-- Chat with an AI agent (powered by Together AI)
-- Store and retrieve chat history using MongoDB
-- Use ChromaDB to give the AI knowledge-based context before replying
+This project is a lightweight backend application that enables:
 
----------------------------------------------------------------
-Requirements:
--------------
-- Python 3.10 or above recommended
-- MongoDB installed and running (localhost:27017)
-- Together AI API key (get it from https://platform.together.xyz/)
-- Internet connection
+User authentication (Sign up / Login)
 
----------------------------------------------------------------
-Setup Instructions (For Windows)
+Conversational interaction with an AI agent powered by Together AI
 
-1. Open PowerShell or CMD inside the project folder.
+Chat history management using MongoDB
 
-2. Install all required packages:
-   python -m pip install -r requirements.txt
+Context-aware responses using ChromaDB for knowledge retrieval
 
-3. Make sure MongoDB is running on your system.
+It is built using Python (Flask framework) and is easily extendable for production use.
+_______________________________________________________________________
 
-4. Set your Together AI API key:
-   set TOGETHER_API_KEY="48e0751ab6fad0972443ee41fc26fe5060e1aadd2733112b313d50a31e29b19e"
+Requirements
 
-5. Add initial knowledge to ChromaDB:
-   python init_knowledge.py
+Python 3.10 or higher
 
-6. Run the Flask app:
-   python app.py
+MongoDB installed and running (default: localhost:27017)
 
----------------------------------------------------------------
+Together AI API key (get it from https://platform.together.xyz/)
+
+Internet connection
+_________________________________________________________________________
+
+Setup Instructions (Windows)
+
+Open PowerShell or CMD in the project folder.
+
+Install required Python packages:
+
+python -m pip install -r requirements.txt
+
+Ensure MongoDB service is running locally.
+
+Set your Together AI API key:
+
+set TOGETHER_API_KEY="48e0751ab6fad0972443ee41fc26fe5060e1aadd2733112b313d50a31e29b19e"
+
+Add initial knowledge to ChromaDB:
+
+python init_knowledge.py
+
+-> You should update init_knowledge.py with knowledge relevant to your application before running it.
+
+Run the Flask app:
+
+python app.py
+_______________________________________________________________________________________________
+
 API Endpoints
 
-1. POST /signup
-   Example JSON body:
-   {
-     "username": "yourname",
-     "password": "yourpass"
-   }
+POST /signup
 
-2. POST /login
-   {
-     "username": "yourname",
-     "password": "yourpass"
-   }
+Registers a new user.
 
-3. POST /chat
-   {
-     "username": "yourname",
-     "message": "What does organic farming avoid?"
-   }
+Example:
 
-   → The app will:
-     - Search ChromaDB for related knowledge
-     - Send the knowledge + your question to Together AI
-     - Return the AI's response
+{
+  "username": "yourname",
+  "password": "yourpass"
+}
 
-4. GET /chat/history?username=yourname
-   → Shows the full chat history for that user.
+POST /login
 
----------------------------------------------------------------
+Logs in an existing user.
+
+Example:
+
+{
+  "username": "yourname",
+  "password": "yourpass"
+}
+
+POST /chat
+
+Sends a message to the AI agent.
+
+Example:
+
+{
+  "username": "yourname",
+  "message": "What does organic farming avoid?"
+}
+
+Internally:
+
+Retrieves related knowledge from ChromaDB
+
+Sends context and message to Together AI
+
+Returns the AI-generated reply
+
+GET /chat/history?username=yourname
+
+Returns all chat history for the specified user.
+______________________________________________________________________
+
 ChromaDB Notes
 
-- ChromaDB is used to store and search knowledge before sending to the AI.
-- Knowledge is added using `init_knowledge.py`.
-- You can extend this to support file uploads or FAQ storage later.
+ChromaDB is used to store searchable contextual knowledge.
 
----------------------------------------------------------------
+You must update init_knowledge.py with your domain-specific facts or data.
+
+This setup enables retrieval-augmented generation (RAG) style chat.
+_________________________________________________________________________________
+
+In future, you can:
+
+Extend it to support file uploads (e.g., PDFs)
+
+Load large corpora or FAQ docs for smarter context
+____________________________________________________________________________________
 Error Handling
 
-- All critical actions (LLM calls, DB actions, vector search) use try/except.
-- Errors return clear JSON like:
-  {
-    "error": "LLM call failed",
-    "details": "..."
-  }
+All major operations (LLM, DB, vector store) are wrapped in try/except blocks.
 
----------------------------------------------------------------
-Test Example:
+On failure, errors are returned in the following format:
 
-1. Run this to populate ChromaDB:
-   python init_knowledge.py
+{
+  "error": "Descriptive error message",
+  "details": "Technical explanation"
+}
+___________________________________________________________________________________
+Test Example
 
-2. Send a message like:
-   "What does organic farming avoid?"
+Run the initialization script once:
 
-3. You'll get an AI answer with context like:
-   "Organic farming avoids synthetic chemicals..."
+python init_knowledge.py
 
----------------------------------------------------------------
-Need Help?
+(Update it as per your domain knowledge before running)
 
-- Make sure MongoDB is running
-- Always set TOGETHER_API_KEY before starting
-- Internet is required for Together AI
+Sign up and log in:
 
-Author: Daksh Maheshkumar Patel
+{
+  "username": "daksh",
+  "password": "yourpass"
+}
+
+Ask a question through the chat endpoint:
+
+{
+  "username": "daksh",
+  "message": "What does organic farming avoid?"
+}
+
+Get a relevant AI reply using ChromaDB-enhanced context.
+_______________________________________________________________________________
+
+Future Enhancements
+
+Add PDF or document ingestion (e.g., langchain for parsing + chunking)
+
+Create a frontend (React/HTML) for user-friendly interface
+
+Add admin dashboard to manage users or knowledge base
+
+Support more LLMs (OpenAI, Gemini, etc.) using API switches
+________________________________________________________________________________
+
+Troubleshooting
+
+Ensure MongoDB is running on localhost:27017
+
+Check that your Together API key is correctly set in the environment
+
+Verify internet connection for LLM access
+____________________________________________________________________________________
+
+Author
+
+Daksh Maheshkumar Patel
 Email: thedmpatel04@gmail.com
+GitHub: https://github.com/thedakshpatel
